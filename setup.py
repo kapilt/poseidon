@@ -3,7 +3,8 @@ from __future__ import print_function, absolute_import
 import os
 from setuptools import setup, find_packages
 
-VERSION = "0.3.1"
+VERSION = "0.3.2"
+
 
 def write_version_py(filename=None):
     cnt = """\
@@ -57,8 +58,9 @@ DigitalOcean cloud in a simple, programmatic way using conventional HTTP
 requests. The endpoints are intuitive and powerful, allowing you to easily make
 calls to retrieve information or to execute actions.
 
-This library starts with a python wrapper for the API and aims to build tools to
-make it easier to manage, provision, and deploy to Digital Ocean.
+This library starts with a python wrapper for the API and aims to
+build tools to make it easier to manage, provision, and deploy to
+Digital Ocean.
 
 Highlights
 ==========
@@ -102,7 +104,7 @@ setup(
     name='poseidon',
     version=VERSION,
     author='Chang She',
-    packages = find_packages(),
+    packages=find_packages(),
     url='https://github.com/changhiskhan/poseidon',
     license='MIT',
     keywords=['digitalocean', 'digital ocean', 'digital', 'ocean', 'api', 'v2',
@@ -112,7 +114,7 @@ setup(
     classifiers=CLASSIFIERS,
     download_url=DOWNLOAD_URL,
     package_data={'': ['requirements.txt']},
-    install_requires = [
+    install_requires=[
         'requests',
     ],
 )

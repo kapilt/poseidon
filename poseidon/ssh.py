@@ -19,6 +19,11 @@ except ImportError:
     print("Pandas not found or out of date. SSHClient.ps will return str data")
     has_pandas = False
 
+try:
+    import simplejson as json
+except ImportError:
+    import json
+
 
 class SSHClient(object):
     """
@@ -87,8 +92,9 @@ class SSHClient(object):
 
     def exec_command(self, cmd):
         """
-        Proceed with caution, if you run a command that causes a prompt and then
-        try to read/print the stdout it's going to block forever
+        Proceed with caution, if you run a command that causes a
+        prompt and then try to read/print the stdout it's going to
+        block forever
 
         Returns
         -------
@@ -97,7 +103,7 @@ class SSHClient(object):
         if self.pwd is not None:
             cmd = 'cd %s ; %s' % (self.pwd, cmd)
         if self.interactive:
-            print cmd
+            print(cmd)
         return self.con.exec_command(cmd)
 
     def wait(self, cmd, raise_on_error=True):
@@ -171,17 +177,19 @@ class SSHClient(object):
         return self.wait(cmd, raise_on_error=raise_on_error)
 
     def curl(self, url, raise_on_error=True, **kwargs):
-        import simplejson as json
+
         def format_param(name):
             if len(name) == 1:
                 prefix = '-'
             else:
                 prefix = '--'
             return prefix + name
+
         def format_value(value):
             if value is None:
                 return ''
             return json.dumps(value)
+
         options = ['%s %s' % (format_param(k), format_value(v))
                    for k, v in kwargs.items()]
         cmd = 'curl %s "%s"' % (' '.join(options), url)

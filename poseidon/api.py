@@ -8,6 +8,10 @@ All of the functionality that you are familiar with in the DigitalOcean control
 panel is also available through the API, allowing you to script the complex
 actions that your situation requires.
 """
+"""
+TODO: refactor for multipage results
+TODO: unit tests for Images, ImageActions, and DomainRecords
+"""
 
 import os
 import requests
@@ -21,11 +25,6 @@ API_VERSION = 'v2'
 API_URL = 'https://api.digitalocean.com'
 
 
-"""
-TODO: refactor for multipage results
-TODO: unit tests for Images, ImageActions, and DomainRecords
-"""
-
 class APIError(Exception):
     """
     Error raised when API response status code is above 200s range
@@ -36,7 +35,6 @@ class APIError(Exception):
         self.status_code = status_code
         for k, v in kwargs.iteritems():
             setattr(self, k, v)
-
 
 
 class RestAPI(object):
@@ -100,7 +98,6 @@ class RestAPI(object):
         return req_data
 
 
-
 class DigitalOceanAPI(RestAPI):
     """
     Implements RestAPI with DigitalOcean API v2 url and authentication method
@@ -135,7 +132,6 @@ class DigitalOceanAPI(RestAPI):
         """create request url for resource"""
         return '/'.join((self.api_url, self.api_version, resource) +
                         tuple(str(x) for x in args))
-
 
 
 class Resource(object):
@@ -195,7 +191,6 @@ class Resource(object):
         return self.send_request('head', url_components, **kwargs)
 
 
-
 class ResourceCollection(Resource):
     """
     A special type of resource that consists of multiple units that can be
@@ -225,7 +220,6 @@ class ResourceCollection(Resource):
         return self.result_key[:-1]
 
 
-
 class MutableCollection(ResourceCollection):
     """
     A special type of ResourceCollection whose individual units can be
@@ -248,7 +242,6 @@ class MutableCollection(ResourceCollection):
         """
         return (super(MutableCollection, self).get((id,), **kwargs)
                 .get(self.singular, None))
-
 
 
 class ImageActions(Resource):
@@ -284,14 +277,13 @@ class ImageActions(Resource):
         return 'images/%s/actions' % self.id
 
 
-
 # ----------------------------------------------------------------------
 # Mutable collections
 # ----------------------------------------------------------------------
 
 class Images(MutableCollection):
     """
-    Images in DigitalOcean may refer to one of a few different kinds of objects.
+    Images in DigitalOcean may refer to a few different kinds of objects.
 
     An image may refer to a snapshot that has been taken of a Droplet instance.
     It may also mean an image representing an automatic backup of a Droplet.
@@ -307,7 +299,6 @@ class Images(MutableCollection):
         """id or slug"""
         info = super(Images, self).get(id)
         return ImageActions(self.api, parent=self, **info)
-
 
 
 class Keys(MutableCollection):
@@ -332,11 +323,10 @@ class Keys(MutableCollection):
                 .get(self.singular, None))
 
 
-
 class Domains(MutableCollection):
     """
     Domain resources are domain names that you have purchased from a domain
-    name registrar that you are managing through the DigitalOcean DNS interface.
+    name registrar that you are managing via the DigitalOcean DNS interface.
 
     This resource establishes top-level control over each domain. Actions that
     affect individual domain records should be taken on the [Domain Records]
@@ -376,7 +366,6 @@ class Domains(MutableCollection):
         Domain cannot be updated
         """
         raise NotImplementedError()
-
 
 
 class DomainRecords(MutableCollection):
@@ -445,7 +434,6 @@ class DomainRecords(MutableCollection):
         return super(DomainRecords, self).get(id, **kwargs)
 
 
-
 # ----------------------------------------------------------------------
 # Immutable collections
 # ----------------------------------------------------------------------
@@ -462,7 +450,6 @@ class Regions(ResourceCollection):
     resource_path = 'regions'
 
 
-
 class Sizes(ResourceCollection):
     """
     The sizes objects represent different packages of hardware resources that
@@ -475,7 +462,6 @@ class Sizes(ResourceCollection):
     and the regions that the size is available in.
     """
     resource_path = 'sizes'
-
 
 
 class Actions(ResourceCollection):

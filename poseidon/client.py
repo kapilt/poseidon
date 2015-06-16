@@ -31,6 +31,5 @@ class Client(object):
         self.sizes = Sizes(self.api)
 
 
-
 def connect(api_key=None, api_url=API_URL, api_version=API_VERSION):
     return Client(api_key, api_url, api_version)

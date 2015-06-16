@@ -163,7 +163,6 @@ class Droplets(MutableCollection):
         raise NotImplementedError("Not supported by API")
 
 
-
 class DropletActions(Resource):
     """
     Droplet actions are tasks that can be executed on a Droplet. These can be
